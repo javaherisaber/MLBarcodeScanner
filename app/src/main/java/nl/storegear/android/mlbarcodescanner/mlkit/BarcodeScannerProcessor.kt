@@ -10,7 +10,11 @@ import nl.storegear.android.mlbarcodescanner.util.BarcodeGraphic
 import nl.storegear.android.mlbarcodescanner.util.MetricUtils.dpToPx
 
 /** Barcode Detector Demo.  */
-class BarcodeScannerProcessor(private val callback: CameraXBarcodeCallback, private val offset: Int) : VisionProcessorBase<List<Barcode>>() {
+class BarcodeScannerProcessor(
+    private val callback: CameraXBarcodeCallback,
+    private val offset: Int,
+    private val focusBoxSize: Int
+) : VisionProcessorBase<List<Barcode>>() {
 
     // Note that if you know which format of barcode your app is dealing with, detection will be
     // faster to specify the supported barcode formats one by one, e.g.
@@ -32,11 +36,10 @@ class BarcodeScannerProcessor(private val callback: CameraXBarcodeCallback, priv
         for (barcode in results) {
             val height = graphicOverlay.measuredHeight
             val width = graphicOverlay.measuredWidth
-            val area = dpToPx(264)
-            val left = (width / 2) - (area / 2)
-            val right = (width / 2) + (area / 2)
-            val top = (height / 2) - (area / 2)
-            val bottom = (height / 2) + (area / 2)
+            val left = (width / 2) - (focusBoxSize / 2)
+            val right = (width / 2) + (focusBoxSize / 2)
+            val top = (height / 2) - (focusBoxSize / 2)
+            val bottom = (height / 2) + (focusBoxSize / 2)
             val focusArea = Rect(left, top, right, bottom)
             val box = barcode.boundingBox ?: return
             val barcodeRect = Rect(dpToPx(box.left), dpToPx(box.top), dpToPx(box.right), dpToPx(box.bottom))

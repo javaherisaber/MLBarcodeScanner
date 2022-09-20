@@ -5,13 +5,30 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView_cameraScanning"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <nl.storegear.android.mlbarcodescanner.mlkit.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/previewView_cameraScanning"
+        app:layout_constraintLeft_toLeftOf="@id/previewView_cameraScanning"
+        app:layout_constraintRight_toRightOf="@id/previewView_cameraScanning"
+        app:layout_constraintTop_toTopOf="@id/previewView_cameraScanning" />
+
+    <ImageView
+        android:layout_height="264dp"
+        android:layout_width="264dp"
+        android:src="@drawable/ic_scan_area"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Hello World!"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
