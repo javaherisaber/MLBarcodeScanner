@@ -36,3 +36,4 @@ by adding this meta-data to your `AndroidManifest.xml`
 
 # Reference
 - https://developers.google.com/ml-kit/vision/barcode-scanning/android
+- https://github.com/googlesamples/mlkit/tree/master/android/vision-quickstart
