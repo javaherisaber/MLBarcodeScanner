@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit
+package nl.storegear.android.mlbarcodescanner.lib.mlkit
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,6 +8,8 @@ import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.android.gms.tasks.Tasks
+import com.google.android.odml.image.BitmapMlImageBuilder
+import com.google.android.odml.image.ByteBufferMlImageBuilder
 import com.google.android.odml.image.MediaMlImageBuilder
 import com.google.android.odml.image.MlImage
 import com.google.mlkit.common.MlKitException
@@ -39,6 +41,92 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     private var processingImage: ByteBuffer? = null
     @GuardedBy("this")
     private var processingMetaData: FrameMetadata? = null
+
+    // -----------------Code for processing single still image----------------------------------------
+    override fun processBitmap(bitmap: Bitmap?, graphicOverlay: GraphicOverlay) {
+        if (isMlImageEnabled(graphicOverlay.context)) {
+            val mlImage = BitmapMlImageBuilder(bitmap!!).build()
+            requestDetectInImage(
+                mlImage,
+                graphicOverlay,
+                null
+            )
+            mlImage.close()
+            return
+        }
+
+        requestDetectInImage(
+            InputImage.fromBitmap(bitmap!!, 0),
+            graphicOverlay,
+            null
+        )
+    }
+
+    // -----------------Code for processing live preview frame from Camera1 API-----------------------
+    @Synchronized
+    override fun processByteBuffer(
+        data: ByteBuffer?,
+        frameMetadata: FrameMetadata?,
+        graphicOverlay: GraphicOverlay
+    ) {
+        latestImage = data
+        latestImageMetaData = frameMetadata
+        if (processingImage == null && processingMetaData == null) {
+            processLatestImage(graphicOverlay)
+        }
+    }
+
+    @Synchronized
+    private fun processLatestImage(graphicOverlay: GraphicOverlay) {
+        processingImage = latestImage
+        processingMetaData = latestImageMetaData
+        latestImage = null
+        latestImageMetaData = null
+        if (processingImage != null && processingMetaData != null && !isShutdown) {
+            processImage(processingImage!!, processingMetaData!!, graphicOverlay)
+        }
+    }
+
+    private fun processImage(
+        data: ByteBuffer,
+        frameMetadata: FrameMetadata,
+        graphicOverlay: GraphicOverlay
+    ) {
+        // If live viewport is on (that is the underneath surface view takes care of the camera preview
+        // drawing), skip the unnecessary bitmap creation that used for the manual preview drawing.
+        val bitmap = BitmapUtils.getBitmap(data, frameMetadata)
+
+        if (isMlImageEnabled(graphicOverlay.context)) {
+            val mlImage =
+                ByteBufferMlImageBuilder(
+                    data,
+                    frameMetadata.width,
+                    frameMetadata.height,
+                    MlImage.IMAGE_FORMAT_NV21
+                )
+                    .setRotation(frameMetadata.rotation)
+                    .build()
+            requestDetectInImage(mlImage, graphicOverlay, bitmap)
+                .addOnSuccessListener(executor) { processLatestImage(graphicOverlay) }
+
+            // This is optional. Java Garbage collection can also close it eventually.
+            mlImage.close()
+            return
+        }
+
+        requestDetectInImage(
+            InputImage.fromByteBuffer(
+                data,
+                frameMetadata.width,
+                frameMetadata.height,
+                frameMetadata.rotation,
+                InputImage.IMAGE_FORMAT_NV21
+            ),
+            graphicOverlay,
+            bitmap
+        )
+            .addOnSuccessListener(executor) { processLatestImage(graphicOverlay) }
+    }
 
     @ExperimentalGetImage
     override fun processImageProxy(image: ImageProxy, graphicOverlay: GraphicOverlay) {

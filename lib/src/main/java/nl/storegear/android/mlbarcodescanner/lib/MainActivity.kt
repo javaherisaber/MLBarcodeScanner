@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner
+package nl.storegear.android.mlbarcodescanner.lib
 
 import android.Manifest
 import android.content.Context
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), CameraXBarcodeCallback {
         }
         cameraProvider?.unbind(analysisUseCase)
         imageProcessor?.stop()
-        imageProcessor = BarcodeScannerProcessor(this, focusBoxSize = dpToPx(264))
+        imageProcessor = BarcodeScannerProcessor(this, offset = dpToPx(16), focusBoxSize = dpToPx(264))
 
         val builder = ImageAnalysis.Builder()
         analysisUseCase = builder.build()
