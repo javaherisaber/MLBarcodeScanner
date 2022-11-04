@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -97,6 +98,7 @@ class MainActivity : AppCompatActivity(), CameraXBarcodeCallback {
         imageProcessor = BarcodeScannerProcessor(this, focusBoxSize = dpToPx(264))
 
         val builder = ImageAnalysis.Builder()
+        builder.setTargetResolution(Size(768, 1024))
         analysisUseCase = builder.build()
 
         needUpdateGraphicOverlayImageSourceInfo = true
