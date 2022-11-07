@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit
+package com.buildtoapp.mlbarcodescanner
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,7 +21,7 @@ import java.nio.ByteBuffer
  *
  * @param <T> The type of the detected feature.
  */
-abstract class VisionProcessorBase<T> : VisionImageProcessor {
+internal abstract class VisionProcessorBase<T> : VisionImageProcessor {
 
     private val executor = ScopedExecutor(TaskExecutors.MAIN_THREAD)
 
@@ -46,10 +46,11 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
             return
         }
         val bitmap: Bitmap? = BitmapUtils.getBitmap(image)
+        val mediaImage = image.image ?: error("image should not be null here")
 
         if (isMlImageEnabled(graphicOverlay.context)) {
             val mlImage =
-                MediaMlImageBuilder(image.image!!).setRotation(image.imageInfo.rotationDegrees).build()
+                MediaMlImageBuilder(mediaImage).setRotation(image.imageInfo.rotationDegrees).build()
             requestDetectInImage(
                 mlImage,
                 graphicOverlay,
@@ -66,7 +67,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         }
 
         requestDetectInImage(
-            InputImage.fromMediaImage(image.image!!, image.imageInfo.rotationDegrees),
+            InputImage.fromMediaImage(mediaImage, image.imageInfo.rotationDegrees),
             graphicOverlay,
             bitmap
         )

@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 import android.content.Context;
 import android.graphics.Canvas;

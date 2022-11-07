@@ -1,7 +1,7 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 /** Describing a frame info. */
-public class FrameMetadata {
+class FrameMetadata {
 
   private final int width;
   private final int height;

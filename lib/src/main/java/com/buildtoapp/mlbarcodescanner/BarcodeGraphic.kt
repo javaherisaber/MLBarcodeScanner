@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit
+package com.buildtoapp.mlbarcodescanner
 
 import android.graphics.*
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -6,25 +6,26 @@ import kotlin.math.max
 import kotlin.math.min
 
 /** Graphic instance for rendering Barcode position and content information in an overlay view. */
-class BarcodeGraphic constructor(
-    private val overlay: GraphicOverlay,
+internal class BarcodeGraphic(
     private val barcode: Barcode?,
+    private val overlay: GraphicOverlay,
+    private val drawOverlay: Boolean,
+    private val drawBanner: Boolean,
     private val focusBoxSize: Int,
-    private val result: (Boolean) -> Unit,
+    private val result: BarcodeGraphicFocusResult,
 ) : GraphicOverlay.Graphic(overlay) {
     private val rectPaint: Paint = Paint()
     private val barcodePaint: Paint
     private val labelPaint: Paint
 
     init {
-        rectPaint.color = MARKER_COLOR
         rectPaint.style = Paint.Style.STROKE
         rectPaint.strokeWidth = STROKE_WIDTH
         barcodePaint = Paint()
-        barcodePaint.color = TEXT_COLOR
+        barcodePaint.color = Color.BLACK
         barcodePaint.textSize = TEXT_SIZE
         labelPaint = Paint()
-        labelPaint.color = MARKER_COLOR
+        labelPaint.color = Color.WHITE
         labelPaint.style = Paint.Style.FILL
     }
 
@@ -42,14 +43,14 @@ class BarcodeGraphic constructor(
         rect.right = max(x0, x1)
         rect.top = translateY(rect.top)
         rect.bottom = translateY(rect.bottom)
-        canvas.drawRect(rect, rectPaint)
-
         val focusArea = calculateFocusArea()
         val isInFocusArea = targetIsInFocusArea(focusArea, rect)
-        result.invoke(isInFocusArea)
-
-        // todo: if you don't want to draw the banner remove below code
         if (isInFocusArea) {
+            rectPaint.color = Color.WHITE
+        } else {
+            rectPaint.color = Color.RED
+        }
+        if (isInFocusArea && drawBanner) {
             // Draws other object info.
             val lineHeight = TEXT_SIZE + 2 * STROKE_WIDTH
             val textWidth = barcodePaint.measureText(barcode.displayValue)
@@ -63,6 +64,10 @@ class BarcodeGraphic constructor(
             // Renders the barcode at the bottom of the box.
             canvas.drawText(barcode.displayValue!!, rect.left, rect.top - STROKE_WIDTH, barcodePaint)
         }
+        if (drawOverlay) {
+            canvas.drawRect(rect, rectPaint)
+        }
+        result.onGraphicDrawnInFocusArea(isInFocusArea)
     }
 
     private fun calculateFocusArea(): RectF {
@@ -81,9 +86,11 @@ class BarcodeGraphic constructor(
     }
 
     companion object {
-        private const val TEXT_COLOR = Color.BLACK
-        private const val MARKER_COLOR = Color.WHITE
         private const val TEXT_SIZE = 54.0f
         private const val STROKE_WIDTH = 4.0f
     }
+}
+
+fun interface BarcodeGraphicFocusResult {
+    fun onGraphicDrawnInFocusArea(isInFocus: Boolean)
 }

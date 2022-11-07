@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Wraps an existing executor to provide a {@link #shutdown} method that allows subsequent
  * cancellation of submitted runnables.
  */
-public class ScopedExecutor implements Executor {
+class ScopedExecutor implements Executor {
 
   private final Executor executor;
   private final AtomicBoolean shutdown = new AtomicBoolean();

@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 import android.app.Application;
 import android.util.Log;

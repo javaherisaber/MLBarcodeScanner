@@ -1,10 +1,10 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /** Draw camera image to background. */
-public class CameraImageGraphic extends GraphicOverlay.Graphic {
+class CameraImageGraphic extends GraphicOverlay.Graphic {
 
   private final Bitmap bitmap;
 

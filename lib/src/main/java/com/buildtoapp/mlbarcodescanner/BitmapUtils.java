@@ -1,4 +1,4 @@
-package nl.storegear.android.mlbarcodescanner.mlkit;
+package com.buildtoapp.mlbarcodescanner;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 /** Utils functions for bitmap conversions. */
-public class BitmapUtils {
+class BitmapUtils {
   /** Converts NV21 format byte buffer to bitmap. */
   @Nullable
   public static Bitmap getBitmap(ByteBuffer data, FrameMetadata metadata) {

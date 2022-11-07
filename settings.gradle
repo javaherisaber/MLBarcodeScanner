@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MLBarcodeScanner"
 include ':app'
+include ':lib'
