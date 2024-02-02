@@ -108,27 +108,11 @@ There are two types of dependency for barcode scanning using ML-Kit vision
 
 ## Bundled model 
 (with 3-10 MB increase in apk size) 
-
-Use this dependency
-```groovy
-implementation 'com.google.mlkit:barcode-scanning:17.0.2'
-```
+We added this model to the `debug variant` so that you don't have to wait for GooglePlay services to download it in your testing
 
 ## Unbundled
 (with no increase in apk size but downloaded from Google Play Services on demand)
-
-Use this dependency
-```groovy
-implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:17.0.0'
-```
-
-Also you can optimize it to download models immediately after installing from **Play Store** 
-by adding this meta-data to your `AndroidManifest.xml` 
-```xml
-<meta-data
-    android:name="com.google.mlkit.vision.DEPENDENCIES"
-    android:value="barcode" />
-```
+We added this model to the `release variant` for end users to reduce apk size
 
 # Reference
 - https://developers.google.com/ml-kit/vision/barcode-scanning/android
