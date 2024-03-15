@@ -1,4 +1,6 @@
 [![](https://jitpack.io/v/javaherisaber/MLBarcodeScanner.svg)](https://jitpack.io/#javaherisaber/MLBarcodeScanner)
+[![Download](https://img.shields.io/badge/Android%20Arsenal-MLBarcodeScanner-green.svg)](https://android-arsenal.com/details/1/8461)
+
 # MLBarcodeScanner
 Android barcode scanner using Google ML-Kit Vision
 
